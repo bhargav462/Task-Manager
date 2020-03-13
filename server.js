@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.get('/',(req,res) => {
 //   res.sendFile('chessPhotos.html',{root:__dirname + '/public'});
+console.log('get',__dirname);
      res.sendFile('register.html',{root:__dirname + '/public'})
 });
   
