@@ -52,11 +52,7 @@
         margin-top: 0px;
       }
 
-      
-      
-      #inputPhoto {
-  /* color: transparent; */
-    }
+    
 #inputPhoto::-webkit-file-upload-button {
   visibility: hidden;
 }
@@ -191,11 +187,11 @@ footer{
         }).then(function(result){
 
           localStorage.clear();
-           window.location.href = "http://localhost:3000/login"
+           window.location.href = "/login"
 
         }).catch(function(err){
           localStorage.clear();
-          window.location.href = "http://localhost:3000/login"
+          window.location.href = "/login"
 
         })
       })

@@ -6,6 +6,7 @@ const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 const hbs = require('hbs');
 const html = require('html');
+const port = process.env.PORT || 3000
 
 const chessRoutes = require("./routes/chessRoutes");
 const userRoutes = require('./routes/userRoutes');
@@ -31,8 +32,8 @@ app.use(userRoutes);
 app.use(chessRoutes);
 
 mongoose.connect('mongodb://127.0.0.1:27017/chess',{useNewUrlParser:true}).then(result => {
-    var server = app.listen(3000,(res) => {
-        console.log('Server is up on port 3000');
+    var server = app.listen(port,(res) => {
+        console.log(`Server is up on port ${port}`);
     })
 }).catch(e => {
     console.log('Unable to connect to the database');
