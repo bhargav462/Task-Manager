@@ -31,7 +31,7 @@ app.get('/',(req,res) => {
 app.use(userRoutes);
 app.use(chessRoutes);
 
-mongoose.connect('mongodb://127.0.0.1:27017/chess',{useNewUrlParser:true}).then(result => {
+mongoose.connect('mongodb+srv://n462:<password>@mycluster-ebxbe.mongodb.net/test?retryWrites=true&w=majority',{useNewUrlParser:true}).then(result => {
     var server = app.listen(port,(res) => {
         console.log(`Server is up on port ${port}`);
     })
