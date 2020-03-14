@@ -6,7 +6,8 @@ const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 const hbs = require('hbs');
 const html = require('html');
-const port = process.env.PORT || 3000
+const config = require('./config/config');
+const port = process.env.PORT;
 
 const chessRoutes = require("./routes/chessRoutes");
 const userRoutes = require('./routes/userRoutes');
@@ -32,7 +33,9 @@ console.log('get',__dirname);
 app.use(userRoutes);
 app.use(chessRoutes);
 
-mongoose.connect('mongodb+srv://n462:n462@mycluster-ebxbe.mongodb.net/task?retryWrites=true&w=majority',{useNewUrlParser:true}).then(result => {
+console.log(process.env.MONGODB_URI);
+
+mongoose.connect(process.env.MONGODB_URI,{useNewUrlParser:true}).then(result => {
     var server = app.listen(port,(res) => {
         console.log(`Server is up on port ${port}`);
     })
