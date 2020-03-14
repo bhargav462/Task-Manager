@@ -87,7 +87,12 @@
                      }else{
                          alert("An unexpected error has occured");
                      }
-                })
+                }).fail(function(){
+                        $('#message').html('Email already exists').css('color', 'red');
+       })
+       .always(function(){
+                       $.unblockUI();
+       })
             }
             
         })

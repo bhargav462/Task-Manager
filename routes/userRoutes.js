@@ -19,7 +19,7 @@ router.post('/register',async (req,res) => {
         res.status(200).send(result);
     }).catch((e) => {
         console.log(e);
-        res.send('validation error');
+        res.status(404).send();
     })
    
 });
