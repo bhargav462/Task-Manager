@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./js/utils/axios.js"></script>
+    <script>
+        
+        var token = localStorage.getItem('auth');
+        console.log('token',token)
+
+        axios({
+            method:'post',
+            url:'/login/check',
+            headers:{'auth':token}
+        }).then(function(result){
+            console.log('check')
+          window.location.href = '/chess';
+        }).catch(function(error){
+            console.log('error')
+          localStorage.clear();
+        })
+    </script>
         <script src="./js/utils/jquery.js"></script>
     <script src="./js/utils/blockUI.js"></script>
 
@@ -29,7 +47,7 @@
                 <div class="signin-content">
                     <div class="signin-image">
                         <figure><img src="images/signin-image.jpg" alt="sing up image"></figure>
-                        <a href="./register.html" id="createAnAccount" class="signup-image-link">Create an account</a>
+                        <a href="/" id="createAnAccount" class="signup-image-link">Create an account</a>
                     </div>
 
                     <div class="signin-form">
@@ -81,7 +99,7 @@
              { 
                  console.log(data);
               localStorage.setItem("auth",data);
-              window.location.href = "./chessPhotos.html"
+              window.location.href = "./chess"
 
              }else{
                $('#message').html('Unable to Login').css('color', 'red');

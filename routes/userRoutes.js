@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth')
 
 router.post('/register',async (req,res) => {
+    
     const user = _.pick(req.body,['name','email','password']);
     console.log('user',user);
     
@@ -59,6 +60,10 @@ router.post('/login/check',auth,async function(req,res){
        res.status(400).send()
    }
     
+})
+
+router.get('/chess',(req,res) => {
+    res.sendFile('chessPhotos.html',{root:__dirname + '/../public'})
 })
 
 router.get('/login',async (req,res) => {

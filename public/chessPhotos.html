@@ -3,7 +3,7 @@
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+      <link rel="stylesheet" href="./styles/utils/bootstrap.css">
       <script src="./js/utils/jquery.js"></script>
       <script src="./js/utils/popper.js"></script>
       <script src="./js/utils/bootstrap.js"></script>
@@ -78,6 +78,10 @@ footer{
 
   #heading{
     padding-top:10px;
+  }
+
+  #date{
+    text-align: center;
   }
 
   
@@ -155,7 +159,7 @@ footer{
     
     <footer>
       <div class="jumbotron text-center" style="margin-bottom:0">
-        <p>Footer</p>
+        <p>Created by Bhargav Nakkina</p>
       </div>  
     </footer>
 
@@ -218,7 +222,7 @@ footer{
             '<img src="' + url + '" alt="Chess Image">' + 
             '<div id="info">' + 
             '<p>' + element.comment + '</p> ' + 
-            '</div></div>';
+            '</div><p id="date">' + element.date + '</p></div>';
              photoRow.innerHTML += photoDiv;
 
          }); 
