@@ -218,11 +218,14 @@ footer{
                 url = "http://" + window.location.hostname  + "/chess/" + element._id ;
               }
             
+              const date = new Date(element.date);
+              console.log(element.date)
+
             photoDiv = '<div id="pic" class="col">' + 
             '<img src="' + url + '" alt="Chess Image">' + 
             '<div id="info">' + 
             '<p>' + element.comment + '</p> ' + 
-            '</div><p id="date">' + element.date + '</p></div>';
+            '</div><p id="date">' + date.getDate() + '/' + date.getMonth()+1 + '/' +  date.getFullYear() + '</p></div>';
              photoRow.innerHTML += photoDiv;
 
          }); 
