@@ -60,7 +60,6 @@
 
     <script>
         $('#pass, #re_pass').on('keyup', function () {
-                console.log('Bhargav');
   if ($('#pass').val() == $('#re_pass').val()) {
     $('#message').html('Matching').css('color', 'green');
   } else 
@@ -76,6 +75,7 @@
             var rePassword = document.getElementById('re_pass').value;
             
             if(password !== rePassword){
+                $.unblockUI();
                 $('#message').html('Not Matching').css('color', 'red');
             }else{
                 $.post('/register',{name,email,password,},function(result,status){
