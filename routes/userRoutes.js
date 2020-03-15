@@ -70,6 +70,14 @@ router.get('/login',async (req,res) => {
     res.sendFile('login.html',{root:__dirname + '/../public'})
 })
 
+router.get('/badminton',(req,res) => {
+    res.sendFile('badminton.html',{root:__dirname + '/../public'})
+})
+
+router.get('/novels',(req,res) => {
+    res.sendFile('novels.html',{root:__dirname + '/../public'})
+})
+
 router.post('/logout',auth,async function(req,res){
     console.log(req.body);
     console.log(req.header('auth'))
