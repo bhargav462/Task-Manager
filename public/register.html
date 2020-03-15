@@ -43,6 +43,11 @@
                     <h2 class="form-title">Sign up</h2>
                     <form method="POST" class="register-form" id="register-form">
                         <div class="form-group">
+                            <label for="username"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                            <input type="text" name="username" id="username" placeholder="Username" required/>
+                        </div>
+                        <p id='usermessage'></p>
+                        <div class="form-group">
                             <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                             <input type="text" name="name" id="name" placeholder="Your Name" required/>
                         </div>
@@ -80,20 +85,39 @@
 
     <script>
 
-        $('#pass, #re_pass').on('keyup', function () {
+        document.getElementById('name').value = "";
+        document.getElementById('email').value = "";
+        document.getElementById('pass').value = "";
+        document.getElementById('re_pass').value = "";
+        document.getElementById('username').value = "";
+
+        
+$('#pass, #re_pass').on('keyup', function () {
   if ($('#pass').val() == $('#re_pass').val()) {
     $('#message').html('Matching').css('color', 'green');
   } else 
     $('#message').html('Not Matching').css('color', 'red');
 });
 
-        document.addEventListener('submit',function(e){
+        $('#username').on('keyup',function(){
+            const username = document.getElementById("username").value;
+            console.log('username');
+            axios({
+                method:'post',
+                url:'/userVal',
+                data:{username}
+            }).then(function(result){
+                console.log('userVl')
+                $('#usermessage').html('');
+
+                document.addEventListener('submit',function(e){
             e.preventDefault();
             $.blockUI();
             var name = document.getElementById('name').value;
             var email = document.getElementById('email').value;
             var password = document.getElementById('pass').value;
             var rePassword = document.getElementById('re_pass').value;
+            var username = document.getElementById('username').value;
             
             if(password !== rePassword){
                 $.unblockUI();
@@ -102,7 +126,7 @@
                 axios({
                     method:'post',
                     url:'/register',
-                    data:{name,email,password}
+                    data:{username,name,email,password}
                      })
                       .then(function(result){
                     $.unblockUI();
@@ -118,6 +142,14 @@
             }
             
         })
+                
+            }).catch(function(){
+                $('#usermessage').html('username not available').css('color', 'red');
+            })
+        })
+
+
+        
     </script>
     
 </body>

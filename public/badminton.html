@@ -11,19 +11,36 @@
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="./styles/utils/bootstrap.css">
+      <script src="js/utils/axios.js"></script>
+     
+       
       <style>
       .fakeimg {
         height: 200px;
         background: #aaa;
       }
       #header{
-          height:100px;
+          height:120px;
           text-align: center;
-          margin-top: 20px;
+          background-color: #999;
+      }
+     
+      #playerLabel{
+        margin-left: auto; 
+        margin-right: auto; 
+        display: block; 
+        text-align: center;
+      }
+      #match{
+        margin-left: auto; 
+        margin-right: auto; 
+        display: block; 
+      }
+      #loading{
+        margin-left: auto; 
+        margin-right: auto; 
+        display: block;
       }
       
       </style>
@@ -31,8 +48,14 @@
     <body>
    
   <header>
-    <div id="header"  style="margin-bottom:0">
-      <h1>Task Manager</h1>
+    <div id="header">
+      <h1 id="heading">Task Manager</h1>
+      <a id="username" href="./login.html" class="btn btn-info btn-lg">
+          <span class="glyphicon glyphicon-user"></span> Login
+        </a>
+        <!-- <a id="logout" href="#" class="btn btn-info btn-lg">
+          <span class="glyphicon glyphicon-user"></span> Logout
+        </a> -->
     </div>
     
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -56,19 +79,284 @@
     </nav>
   </header>
 
-    <div class="container" id="photoBody" style="margin-top:30px">
-      <p>Badminton Body</p>
+    <div class="container" id="photoBody" style="margin-top:30px;padding-bottom: 30px;">
+      <div class="row">
+        <!-- <div id="players" > -->
+          <div class="col-sm-4">
+             <label id="playerLabel" for="sel1">Me</label>
+             <select class="form-control" id="player1" name="sellist1">
+              <!-- <option>1</option> -->
+              </select>
+          </div>
+          <div class="col-sm-4">
+            <span id="playerLabel">V/S</span> 
+          </div>
+         
+         <div class="col-sm-4">
+            <label id="playerLabel" for="sel1">opponent</label>
+            <select class="form-control" id="player2" name="sellist1">
+            <!-- <option>1</option> -->
+            </select>
+          </div>
+          <br>
+          <br>
+          <br>
+          <br>
+          <div class="row" id="match">
+            <button id="decision" type="button" class="btn btn-primary">Match</button>
+          </div>
+        
+      </div>
+      <br>
+
+      <div class="row">
+        <table class="table table-bordered">
+          <thead>
+            <tr class="table-active">
+              <th>Opponent</th>
+              <th>Result</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="resultTable">
+            
+          </tbody>
+          
+        </table>
+        <button id="loading"  class="btn btn-primary">
+          <span class="spinner-border spinner-border-sm"></span>
+        </button>
+      </div>
+
+      
+  
     </div>
+
     
     <footer>
       <div class="jumbotron text-center" style="margin-bottom:0">
         <p>Created by Bhargav Nakkina</p>
         </div>  
     </footer>
+
+    <script src="./js/utils/jquery.js"></script>
+    <script src="./js/utils/popper.js"></script>
+    <script src="./js/utils/bootstrap.js"></script>
     
     <script>
+
+      var me;
+      var opponent;
+
+const token = localStorage.getItem('auth');
+console.log('token',token)
+
+//game results
+axios({
+  method:'post',
+  url:'/badminton/results',
+  headers:{'auth':token}
+}).then(function(result){
+  document.getElementById("loading").style.display = "none";
+  const resultTable = document.getElementById("resultTable");
+  resultTable.innerHTML = "";
+
+  console.log(result);
+
+  result.data.forEach((element) => {
+    element.date = new Date(element.date);
+    if(element.result)
+    {
+      element.result = "WIN";
+    }else{
+      element.result = "LOSS"
+    }
+    resultTable.innerHTML += "<tr><td>" + element.opponent + "</td><td>"
+                          + element.result + "</td><td>" + element.date.getDate() + "/" + element.date.getMonth()+ 1 + "/" + element.date.getFullYear() + "</td></tr>";
+  })
+  
+}).catch(function(err){
+  alert("An error has occured while loading the results");
+})
+
+axios({
+   method:'post',
+   url:'/login/check',
+   headers:{'auth':token}
+}).then(function(result){
+
+  const player1 = document.getElementById("player1");
+  const player2 = document.getElementById("player2");
+  player1.innerHTML = "<option value=\"" + result.data + "\">" + result.data + "</option>";
+  me = result.data;
+
+  const username = document.getElementById("username");
+            const header = document.getElementById("header");
+            username.setAttribute("href","#");
+            username.innerHTML = result.data;
+            header.innerHTML += "<a id=\"logout\" href=\"#\" class=\"btn btn-info btn-lg\">" +
+          "<span class=\"glyphicon glyphicon-user\"></span> Logout </a>";
+
+  axios({
+    method:'post',
+    url:'/badminton/users',
+    headers:{'auth':token}
+  }).then(function(result1){
+    console.log(result1)
+    result1.data.forEach(element => {
+      player2.innerHTML += "<option value=\"" + element.username + "\">" + element.username + "</option>"
+    });
+  }).catch(function( err) {
+    alert('error')
+  })
+
+  //logout section
+const logout = document.getElementById("logout");
+          logout.addEventListener("click",function(){
+            console.log('logout;')
+          axios({
+          method: 'post',
+          url: '/logout',
+          headers:{'auth':token}
+          }).then(function(result){
+
+           localStorage.clear();
+           window.location.href = "/login"
+
+         }).catch(function(err){
+          localStorage.clear();
+          window.location.href = "/login"
+
+        })
+
+      })
+   
+}).catch(function(error){
+ localStorage.clear();
+ window.location.href = "/login";
+})
+
+function check(Won) {
+  console.log('nkank')
+  axios({
+    method:'post',
+    url:'/badminton/match',
+    data:{me,opponent,Won},
+    headers:{auth:token}
+  }).then(function(result){
+    console.log('realosa');
+    window.location.reload()
+  }).catch(function(err){
+    console.log('error')
+    alert('an error has occured');
+  })
+}
+
+
  
-        console.log(localStorage.getItem('test'));
+ document.getElementById("decision").addEventListener("click",function(){
+  opponent = $( "#player2 option:selected" ).text();
+   ConfirmMatch(me + "  v/s  " + opponent,confirmation);
+ });
+
+ function ConfirmMatch(message,handler){
+
+
+  $(`<div class="modal fade" id="myModal" role="dialog"> 
+     <div class="modal-dialog"> 
+       <!-- Modal content--> 
+        <div class="modal-content"> 
+           <div class="modal-body" style="padding:10px;"> 
+             <h4 class="text-center">${message}</h4> 
+             <div class="text-center"> 
+               <a class="btn btn-danger btn-yes">yes</a> 
+               <a class="btn btn-default btn-no">no</a> 
+             </div> 
+           </div> 
+       </div> 
+    </div> 
+  </div>`).appendTo('body');
+ 
+  //Trigger the modal
+  $("#myModal").modal({
+     backdrop: 'static',
+     keyboard: false
+  });
+  
+   //Pass true to a callback function
+   $(".btn-yes").click(function () {
+       handler(true);
+       $("#myModal").modal("hide");
+   });
+    
+   //Pass false to callback function
+   $(".btn-no").click(function () {
+       handler(false);
+       $("#myModal").modal("hide");
+   });
+
+   //Remove the modal once it is closed.
+   $("#myModal").on('hidden.bs.modal', function () {
+      $("#myModal").remove();
+   });
+}
+
+function confirmation(isMatch) {
+
+setTimeout(5000);
+
+if(isMatch){
+  console.log('us')
+
+  ConfirmMatchs("Won or Lost",check);
+}
+
+}
+
+function ConfirmMatchs(message,handler){
+
+
+$(`<div class="modal fade" id="myModal1" role="dialog"> 
+   <div class="modal-dialog"> 
+     <!-- Modal content--> 
+      <div class="modal-content"> 
+         <div class="modal-body" style="padding:10px;"> 
+           <h4 class="text-center">${message}</h4> 
+           <div class="text-center"> 
+             <a class="btn btn-danger btn-yes">Won</a> 
+             <a class="btn btn-default btn-no">Lost</a> 
+           </div> 
+         </div> 
+     </div> 
+  </div> 
+</div>`).appendTo('body');
+
+//Trigger the modal
+$("#myModal1").modal({
+   backdrop: 'static',
+   keyboard: false
+});
+
+ //Pass true to a callback function
+ $(".btn-yes").click(function () {
+     handler(true);
+     $("#myModal1").modal("hide");
+ });
+  
+ //Pass false to callback function
+ $(".btn-no").click(function () {
+     handler(false);
+     $("#myModal1").modal("hide");
+ });
+
+ //Remove the modal once it is closed.
+ $("#myModal1").on('hidden.bs.modal', function () {
+    $("#myModal1").remove();
+ });
+}
+
+
+
 
     </script>
     

@@ -20,7 +20,7 @@ exports.createPost = (async (req,res) => {
 
 exports.userPosts = ((req,res) => {
   console.log('userPosts',req.user);
-  Post.find({userId:req.user._id},(err,result) => {
+  Post.find({userId:req.user._id},'_id comment date',(err,result) => {
     console.log('userPosts');
     console.log(result);
     result.reverse();

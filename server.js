@@ -9,8 +9,10 @@ const html = require('html');
 const config = require('./config/config');
 const port = process.env.PORT;
 
+const badmintonRoutes = require("./routes/badmintonRoutes")
 const chessRoutes = require("./routes/chessRoutes");
 const userRoutes = require('./routes/userRoutes');
+
 const publicPath = path.join(__dirname,'/public');
 const utilPath = path.join(__dirname,'/public/js/utils');
 
@@ -32,6 +34,7 @@ app.get('/',(req,res) => {
   
 app.use(userRoutes);
 app.use(chessRoutes);
+app.use(badmintonRoutes)
 
 
 app.get('*',(req,res) => {

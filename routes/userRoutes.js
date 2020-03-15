@@ -8,7 +8,7 @@ const auth = require('../middleware/auth')
 
 router.post('/register',async (req,res) => {
     
-    const user = _.pick(req.body,['name','email','password']);
+    const user = _.pick(req.body,['username','name','email','password']);
     console.log('user',user);
     
     const newUser = new User(user);
@@ -24,6 +24,23 @@ router.post('/register',async (req,res) => {
     })
    
 });
+
+router.post('/userVal',async (req,res) => {
+    console.log('userval')
+  const username = req.body.username;
+     User.findOne({username}).then((result) => {
+         console.log(result);
+        if(result) {
+            console.log('eror');
+            return    res.status(400).send();
+           }
+           res.send();
+
+     }).catch ((error) => {
+        res.status(400).send();
+     })
+       
+})
 
 router.post('/login',async function (req,res) {
 
@@ -55,7 +72,7 @@ router.post('/login',async function (req,res) {
 router.post('/login/check',auth,async function(req,res){
    try{
        console.log('/login/check',req.user.name);
-        res.send(req.user.name)
+        res.send(req.user.username)
    } catch(e){
        res.status(400).send()
    }
@@ -96,5 +113,7 @@ router.post('/logout',auth,async function(req,res){
    }
     
 })
+
+
 
 module.exports = router;

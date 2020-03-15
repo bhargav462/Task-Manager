@@ -11,12 +11,8 @@ const upload = multer({
     }
 })
 
-const check = (req,res,next) => {
-    console.log('Different check');
-    next();
-}
 
-router.post('/createPost',check,auth,upload.single('chessPic'),postController.createPost);
+router.post('/createPost',auth,upload.single('chessPic'),postController.createPost);
 
 router.post('/userPosts',auth,postController.userPosts);
 
