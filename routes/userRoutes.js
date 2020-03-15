@@ -69,9 +69,9 @@ router.post('/login',async function (req,res) {
     
 });
 
-router.post('/login/check',auth,async function(req,res){
+router.post('/login/check',auth,function(req,res){
    try{
-       console.log('/login/check',req.user.name);
+       console.log('/login/check',req.user.username);
         res.send(req.user.username)
    } catch(e){
        res.status(400).send()

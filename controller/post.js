@@ -19,9 +19,7 @@ exports.createPost = (async (req,res) => {
 });
 
 exports.userPosts = ((req,res) => {
-  console.log('userPosts',req.user);
   Post.find({userId:req.user._id},'_id comment date',(err,result) => {
-    console.log('userPosts');
     console.log(result);
     result.reverse();
     res.send(result);
@@ -34,7 +32,6 @@ exports.getPost = ((req,res) => {
   Post.findOne({'_id':req.params.id},(err,result) => {
     if(result)
     {
-      console.log(result);
       res.set('Content-Type','image/png');
       res.send(result.userPost);
     }else{
