@@ -202,6 +202,7 @@ footer{
             const header = document.getElementById("header");
             username.setAttribute("href","#");
             username.innerHTML = name.data;
+            console.log('name',name.data);
             header.innerHTML += "<a id=\"logout\" href=\"#\" class=\"btn btn-info btn-lg\">" +
           "<span class=\"glyphicon glyphicon-user\"></span> Logout </a>";
 
