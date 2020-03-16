@@ -42,7 +42,16 @@
         margin-right: auto; 
         display: block;
       }
-      
+      a{
+        text-decoration: none;
+        color: white;
+      }
+
+a:hover,a:active,a:visited {
+  text-decoration: none;
+}
+
+    
       </style>
     </head>
     <body>
@@ -110,17 +119,33 @@
       <br>
 
       <div class="row">
-        <table class="table table-bordered">
+        <table class="table table-dark">
           <thead>
             <tr class="table-active">
+              <th>Opponent</th>
+              <th>Matches</th>
+              <th>Wins</th>
+            </tr>
+          </thead>
+          <tbody id="matchResults">
+        
+          </tbody>
+        </table>
+        <table class="table table-bordered" >
+          <thead>
+            <tr class="table-active" >
               <th>Opponent</th>
               <th>Result</th>
               <th>Date</th>
             </tr>
           </thead>
           <tbody id="resultTable">
-            
-          </tbody>
+            <tr>
+              <td>bhargav</td>
+              <td>Bhargav</td>
+              <td>bharav</td>
+            </tr>
+            </tbody>
           
         </table>
         <button id="loading"  class="btn btn-primary">
@@ -145,8 +170,11 @@
     
     <script>
 
+
+
       var me;
       var opponent;
+      var gameResults;
 
 const token = localStorage.getItem('auth');
 console.log('token',token)
@@ -157,13 +185,25 @@ axios({
   url:'/badminton/results',
   headers:{'auth':token}
 }).then(function(result){
+  result.data.sort(function(a,b){
+    var nameA=a.opponent.toLowerCase(), nameB=b.opponent.toLowerCase()
+    if (nameA < nameB) 
+        return -1 
+    if (nameA > nameB)
+        return 1
+    return 0
+  });
+  console.log(result);
+  gameResults = result;
+  var userSet = new Set();
   document.getElementById("loading").style.display = "none";
   const resultTable = document.getElementById("resultTable");
   resultTable.innerHTML = "";
 
   console.log(result);
-
+  var temp = "";
   result.data.forEach((element) => {
+    userSet.add(element.opponent);
     element.date = new Date(element.date);
     if(element.result)
     {
@@ -171,14 +211,41 @@ axios({
     }else{
       element.result = "LOSS"
     }
-    resultTable.innerHTML += "<tr><td>" + element.opponent + "</td><td>"
+    if(temp !== element.opponent){
+      temp = element.opponent
+      resultTable.innerHTML += `<tr id="${element.opponent}1"><td>` + element.opponent + "</td><td>"
                           + element.result + "</td><td>" + element.date.getDate() + "/" + element.date.getMonth()+ 1 + "/" + element.date.getFullYear() + "</td></tr>";
+    }else{
+      resultTable.innerHTML += `<tr><td>` + element.opponent + "</td><td>"
+                          + element.result + "</td><td>" + element.date.getDate() + "/" + element.date.getMonth()+ 1 + "/" + element.date.getFullYear() + "</td></tr>";
+   
+    }
+ })
+
+    
+
+  var matchResults = document.getElementById('matchResults');
+  userSet.forEach((element) => {
+    var count = 0;
+    var won = 0;
+     result.data.filter((element1) =>{
+        if(element1.opponent === element){
+          if(element1.result === 'WIN'){
+            won++;
+          }
+          count++;
+        }
+     })
+     
+      matchResults.innerHTML += `<tr><td><a href="#${element}1">` + element + '</a></td><td>' + count + '</td><td>' + won + '</td></td>'
+     
   })
   
 }).catch(function(err){
   alert("An error has occured while loading the results");
 })
 
+//login check
 axios({
    method:'post',
    url:'/login/check',
