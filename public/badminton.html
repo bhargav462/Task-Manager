@@ -202,10 +202,9 @@ axios({
 
   console.log(result);
   var temp = "";
-  if(result.data[0] === NULL){
-    resultTable.innerHTML = "No matches Played till now"
-  }
+  var check  = 1;
   result.data.forEach((element) => {
+    check = 2;
     userSet.add(element.opponent);
     element.date = new Date(element.date);
     if(element.result)
@@ -224,6 +223,10 @@ axios({
    
     }
  })
+
+ if(check === 1){
+   resultTable.innerHTML += "No matches has played till now ";
+ }
 
     
 
