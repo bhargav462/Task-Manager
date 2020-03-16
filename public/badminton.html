@@ -202,7 +202,7 @@ axios({
 
   console.log(result);
   var temp = "";
-  if(result.date[0] === NULL){
+  if(result.data[0] === NULL){
     resultTable.innerHTML = "No matches Played till now"
   }
   result.data.forEach((element) => {
