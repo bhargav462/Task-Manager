@@ -11,29 +11,115 @@
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="./styles/utils/bootstrap.css">
+      <link rel="stylesheet" href="./styles/utils/fontawesome.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+      
       <style>
       .fakeimg {
         height: 200px;
         background: #aaa;
       }
       #header{
-          height:100px;
+          height:120px;
           text-align: center;
-          margin-top: 20px;
+          background-color: #999;
       }
+      
+      #addInput{
+flex:0 0 66.66667%
+      }
+
+      select {
+        width: 150px;
+        margin: 10px;
+    }
+    select:focus {
+        min-width: 150px;
+        width: auto;
+    }
+
+    .tasker ul, .tasker li,
+.tasker .error,
+.tasker button,
+.tasker input {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+.todo-header button, .todo-lists .task button {
+  transition: all 0.2s ease;
+  -webkit-transition: all 0.2s ease;
+}
+.tasker {
+  max-width: 400px;
+  margin: 0 auto;
+}
+.tasker .error {
+  display: none;
+  background: #ff4747;
+  color: #fff;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+.tasker ul {
+  background: #fff;
+}
+.tasker li,
+.tasker .error,
+.tasker button,
+.tasker input {
+  font: 18px/1.25em 'Lato', sans-serif;
+}
+#input-task {
+  color: white;
+}
+
+ .todo-header {
+  display: inline-flex;
+  background: #212121;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.todo-header input,
+.todo-header button {
+  color: #fff;
+  box-sizing: border-box;
+  font-size: 1.25em;
+  padding: 14px;
+}
+.todo-header input {
+  flex-grow: 2;
+}
+.todo-header button {
+  background: #00b934;
+  border-left: 1px solid #098009;
+}
+
+#message{
+  color:red;
+  text-align:center;
+}
+      
       
       </style>
     </head>
     <body>
    
-  <header>
-    <div id="header"  style="margin-bottom:0">
-      <h1>Task Manager</h1>
-    </div>
+      <header>
+        <div id="header">
+          <h1 id="heading">Task Manager</h1>
+          <a id="username" href="./login.html" class="btn btn-info btn-lg">
+              <span class="glyphicon glyphicon-user"></span> Login
+            </a>
+            <!-- <a id="logout" href="#" class="btn btn-info btn-lg">
+              <span class="glyphicon glyphicon-user"></span> Logout
+            </a> -->
+        </div>
     
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <!-- <a class="navbar-brand" href="#">Navbar</a> -->
@@ -56,22 +142,137 @@
     </nav>
   </header>
 
-    <div class="container" id="photoBody" style="margin-top:30px">
-      <p>Novels Body</p>
+  <div class="container" id="photoBody" style="margin-top:30px">
+    <div id="addNovels" class="form-group">
+      <div id="tasker" class="tasker">
+        <p id="message"></p>
+      	<div id="error" class="error">Please Enter a Novel</div>
+      	<div id="todo-header" class="todo-header">
+	      	<input type="text" id="inputNovel" placeholder="Enter a Novel" required>
+	      	<button id="add-task"><i class="fa fa-fw fa-plus"></i></button>
+	      </div>
+	
+      </div>
     </div>
+    
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Novels</th>
+        </tr>
+      </thead>
+      <tbody id="novelTable">
+
+      </tbody>
+    </table>
+  </div>
     
     <footer>
       <div class="jumbotron text-center" style="margin-bottom:0">
         <p>Created by Bhargav Nakkina</p>
       </div>  
     </footer>
+
+    <script src="./js/utils/jquery.js"></script>
+      <script src="./js/utils/popper.js"></script>
+      <script src="./js/utils/bootstrap.js"></script>
+      <script src="./js/utils/axios.js"></script>
     
     <script>
+    const token = localStorage.getItem('auth');
+    //login check
+axios({
+   method:'post',
+   url:'/login/check',
+   headers:{'auth':token}
+}).then(function(result){
+
+  const username = document.getElementById("username");
+            const header = document.getElementById("header");
+            username.setAttribute("href","#");
+            username.innerHTML = result.data;
+            header.innerHTML += "<a id=\"logout\" href=\"#\" class=\"btn btn-info btn-lg\">" +
+          "<span class=\"glyphicon glyphicon-user\"></span> Logout </a>";
+
+          //get Novels
+
+          axios({
+            method : 'post',
+            url : '/novels/getbooks',
+            headers : {'auth':token}
+          }).then(function(result1){
+            console.log(result1)
+            var novelTable = document.getElementById("novelTable");
+
+            result1.data.forEach(element => {
+              novelTable.innerHTML += "<tr><td onclick=\"novelData(this)\">" + element.bookName + "</td></tr>"
+            });
+
+          }).catch(function(err1){
+            alert("Unable to get the details of the books");
+          })
+
+  //logout section
+const logout = document.getElementById("logout");
+          logout.addEventListener("click",function(){
+            console.log('logout;')
+          axios({
+          method: 'post',
+          url: '/logout',
+          headers:{'auth':token}
+          }).then(function(result2){
+
+           localStorage.clear();
+           window.location.href = "/login"
+
+         }).catch(function(err2){
+          localStorage.clear();
+          window.location.href = "/login"
+
+        })
+
+      })
+   
+}).catch(function(error){
+ localStorage.clear();
+ window.location.href = "/login"; 
+})
+
+var addNovel = document.getElementById("add-task");
+var message = document.getElementById("message");
+
+addNovel.addEventListener("click",function(){
+  var inputNovel = document.getElementById("inputNovel").value;
+  inputNovel = inputNovel.trim();
+  if(inputNovel === "")
+  {
+    message.innerHTML = "Please enter the name of a novel";
+  }else{
+    message.innerHTML = "";
+    axios({
+  method : 'post',
+  url : '/novels/addbook',
+  data : {inputNovel},
+  headers : {'auth':token}
+}).then(function(result){
+  document.getElementById("inputNovel").value = "";
+}).catch(function(error){
+  message.innerHTML = "Unable to add the novel";
+})
+  }
  
- console.log(localStorage.getItem('test'));
 
+})
 
-    </script>
+</script>
+
+<script>
+
+  function novelData(res){
+    console.log(res.innerHTML);
+  }
+
+</script>
     
 </body>
 </html>

@@ -5,7 +5,7 @@
   },
   "development":{
       "PORT":3000,
-      "MONGODB_URI" : "mongodb://127.0.0.1:27017/chess",
+      "MONGODB_URI" : "mongodb://127.0.0.1:27017/task",
       "JWT_SECRET" : "bhargav"
   }
 }
